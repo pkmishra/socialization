@@ -30,7 +30,7 @@ module Socialization
         Socialization.like_model.likes?(liker, self)
       end
 
-      # Returns an array of {Liker}s liking self.
+      # Returns all likers liking self.
       #
       # @param [Class] klass the {Liker} class to be included. e.g. `User`
       # @return [Array<Liker, Numeric>] An array of Liker objects or IDs

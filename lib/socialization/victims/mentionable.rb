@@ -30,7 +30,7 @@ module Socialization
         Socialization.mention_model.mentions?(mentioner, self)
       end
 
-      # Returns an array of {Mentioner}s mentioning self.
+      # Returns all mentioners mentioning self.
       #
       # @param [Class] klass the {Mentioner} class to be included. e.g. `User`
       # @return [Array<Mentioner, Numeric>] An array of Mentioner objects or IDs

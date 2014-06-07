@@ -30,12 +30,17 @@ module Socialization
         Socialization.follow_model.follows?(follower, self)
       end
 
-      # Returns an array of {Follower}s following self.
+      # Returns the followers following self.
       #
       # @param [Class] klass the {Follower} class to be included. e.g. `User`
       # @return [Array<Follower, Numeric>] An array of Follower objects or IDs
       def followers(klass, opts = {})
         Socialization.follow_model.followers(self, klass, opts)
+      end
+
+      # Returns number of followers
+      def followers_count(klass, opts = {})
+        Socialization.follow_model.followers_count(self, klass, opts)
       end
 
       # Returns a scope of the {Follower}s following self.
