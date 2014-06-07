@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0
+
+* Added followers_count, followable_count, and other like these in each model
+* Now the followers, followable, etc. will return an Active Record Relation, not an array
+
+
+# Original Changelog:
+
 ## 1.0.1 (January 8, 2014)
 
 * Supports Rails 4 (thanks @thomas88)

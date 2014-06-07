@@ -15,7 +15,7 @@ The Mention feature was written with Facebook mentions in mind. For example, Joh
 ### Rails 3/4
 
 Add the gem to the gemfile:
-`gem "socialization"`
+`gem "socialization", git: 'git://github.com/OGabrielMarques/socialization'`
 
 Run the generator:
 `rails generate socialization -s`
@@ -207,6 +207,16 @@ Find out if an objects mentions
 All mentioners
 
     user.mentioners(Comment)
+
+
+***
+
+### other tools
+
+You can count the number of followers, likers, etc. appending `_count` to the All followers/likers/mentioner/etc. methods
+
+    # Example
+    user.follower_count(User)
 
 
 ***
