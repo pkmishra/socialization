@@ -1,2 +1,2 @@
-class DownVote < Socialization::RedisStores::Like
+class DownVote < Socialization::RedisStores::DownVote
 end

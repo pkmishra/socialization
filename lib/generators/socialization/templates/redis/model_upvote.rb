@@ -1,2 +1,2 @@
-class UpVote < Socialization::RedisStores::Like
+class UpVote < Socialization::RedisStores::UpVote
 end

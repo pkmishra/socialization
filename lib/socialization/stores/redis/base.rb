@@ -91,6 +91,10 @@ module Socialization
             ['liker', 'likeable']
           elsif klass.name.match(/Mention$/)
             ['mentioner', 'mentionable']
+          elsif klass.name.match(/UpVote$/)
+            ['upvoter', 'upvoteable']
+          elsif klass.name.match(/DownVote$/)
+            ['downvoter', 'downvoteable']
           else
             raise Socialization::ArgumentError.new("Can't find matching type for #{klass}.")
           end
