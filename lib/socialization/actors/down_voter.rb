@@ -9,7 +9,7 @@ end
 
 module Socialization
   module DownVoter
-    extend ActiveSdownport::Concern
+    extend ActiveSupport::Concern
 
     included do
       after_destroy { Socialization.downvote_model.remove_downvoteables(self) }
