@@ -35,5 +35,30 @@ module Socialization
     def mention_model=(klass)
       @mention_model = klass
     end
+
+    def upvote_model
+      if @upvote_model
+        @upvote_model
+      else
+        ::UpVote
+      end
+    end
+
+    def upvote_model=(klass)
+      @upvote_model = klass
+    end
+
+    def downvote_model
+      if @downvote_model
+        @downvote_model
+      else
+        ::DownVote
+      end
+    end
+
+    def downvote_model=(klass)
+      @downvote_model = klass
+    end
+
   end
 end

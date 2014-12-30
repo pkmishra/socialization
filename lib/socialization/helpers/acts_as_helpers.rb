@@ -34,6 +34,19 @@ module Socialization
       def acts_as_mentionable(opts = {})
         include Socialization::Mentionable
       end
+
+       # Make the current class a {Socialization::Mentioner}
+      def acts_as_voter(opts = {})
+        include Socialization::UpVoter
+        include Socialization::DownVoter
+      end
+
+      # Make the current class a {Socialization::Mentionable}
+      def acts_as_voteable(opts = {})
+        include Socialization::UpVoteable
+        include Socialization::DownVoteable
+      end
+
     end
   end
 end
