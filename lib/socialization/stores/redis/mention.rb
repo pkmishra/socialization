@@ -15,6 +15,7 @@ module Socialization
         alias_method :mentionables, :victims;                        public :mentionables
         alias_method :remove_mentioners, :remove_actor_relations;    public :remove_mentioners
         alias_method :remove_mentionables, :remove_victim_relations; public :remove_mentionables
+        alias_method :mention_time, :score;                          public :mention_time
       end
 
     end

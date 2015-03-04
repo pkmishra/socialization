@@ -15,6 +15,7 @@ module Socialization
         alias_method :followables, :victims;                        public :followables
         alias_method :remove_followers, :remove_actor_relations;    public :remove_followers
         alias_method :remove_followables, :remove_victim_relations; public :remove_followables
+        alias_method :follow_time, :score;                          public :follow_time
       end
 
     end

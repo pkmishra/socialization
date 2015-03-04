@@ -15,12 +15,7 @@ module Socialization
           end
         end
 
-        def actors_with_time(victim, klass, options = {})
-        end 
-        def victims_with_time(victim, klass, options = {})
-        end 
-
-        def actors_relation(victim, klass, options = {})
+       def actors_relation(victim, klass, options = {})
           ids = actors(victim, klass, :pluck => :id)
           klass.where("#{klass.table_name}.id IN (?)", ids)
         end
@@ -64,7 +59,11 @@ module Socialization
         end
 
         def relation?(actor, victim)
-          Socialization.redis.zrevrank generate_forward_key(victim), generate_redis_value(actor)
+          Socialization.redis.zrevrank(generate_forward_key(victim), generate_redis_value(actor)) >= 0
+        end
+        
+        def score(victim, actor)
+          Socialization.redis.zscore generate_forward_key(victim),  generate_redis_value(actor) 
         end
 
         def remove_actor_relations(victim)
