@@ -6,7 +6,7 @@ module Socialization
       protected
         def actors(victim, klass, options = {})
           if options[:pluck]
-            Socialization.redis.zrevrange(generate_forward_key(victim), 0, -1).inject([] do |result, element|
+            Socialization.redis.zrevrange(generate_forward_key(victim), 0, -1).inject([]) do |result, element|
               result << element.match(/\:(\d+)$/)[1] if element.match(/^#{klass}\:/)
               result
             end
