@@ -3,10 +3,10 @@ module Socialization
     class Base
 
       class << self
-      protected
+        protected
         def actors(victim, klass, options = {})
           if options[:pluck]
-            Socialization.redis.smembers(generate_forward_key(victim)).inject([]) do |result, element|
+            Socialization.redis.zrevrange(generate_forward_key(victim), 0, -1).inject([]) do |result, element|
               result << element.match(/\:(\d+)$/)[1] if element.match(/^#{klass}\:/)
               result
             end
@@ -14,20 +14,22 @@ module Socialization
             actors_relation(victim, klass, options).to_a
           end
         end
-
+        #intarray extention must be enabled in postgres to use sorting by idx
         def actors_relation(victim, klass, options = {})
-          ids = actors(victim, klass, :pluck => :id)
-          klass.where("#{klass.table_name}.id IN (?)", ids)
+          ids = actors(victim, klass, :pluck => :id) || []
+          ids = ids.map(&:to_i)
+          klass.where("#{klass.table_name}.id IN (?)", ids).order("idx(Array#{ids}::integer[], #{klass.table_name}.id)")
         end
 
         def victims_relation(actor, klass, options = {})
-          ids = victims(actor, klass, :pluck => :id)
-          klass.where("#{klass.table_name}.id IN (?)", ids)
+          ids = victims(actor, klass, :pluck => :id) || []
+          ids = ids.map(&:to_i)
+          klass.where("#{klass.table_name}.id IN (?)", ids).order("idx(Array#{ids}::integer[], #{klass.table_name}.id)")
         end
 
         def victims(actor, klass, options = {})
           if options[:pluck]
-            Socialization.redis.smembers(generate_backward_key(actor)).inject([]) do |result, element|
+            Socialization.redis.zrevrange(generate_backward_key(actor), 0, -1).inject([]) do |result, element|
               result << element.match(/\:(\d+)$/)[1] if element.match(/^#{klass}\:/)
               result
             end
@@ -38,8 +40,8 @@ module Socialization
 
         def relation!(actor, victim, options = {})
           unless options[:skip_check] || relation?(actor, victim)
-            Socialization.redis.sadd generate_forward_key(victim), generate_redis_value(actor)
-            Socialization.redis.sadd generate_backward_key(actor), generate_redis_value(victim)
+            Socialization.redis.zadd generate_forward_key(victim), Time.now.to_i, generate_redis_value(actor)
+            Socialization.redis.zadd generate_backward_key(actor), Time.now.to_i, generate_redis_value(victim)
             call_after_create_hooks(actor, victim)
             true
           else
@@ -49,8 +51,8 @@ module Socialization
 
         def unrelation!(actor, victim, options = {})
           if options[:skip_check] || relation?(actor, victim)
-            Socialization.redis.srem generate_forward_key(victim), generate_redis_value(actor)
-            Socialization.redis.srem generate_backward_key(actor), generate_redis_value(victim)
+            Socialization.redis.zrem generate_forward_key(victim), generate_redis_value(actor)
+            Socialization.redis.zrem generate_backward_key(actor), generate_redis_value(victim)
             call_after_destroy_hooks(actor, victim)
             true
           else
@@ -59,31 +61,35 @@ module Socialization
         end
 
         def relation?(actor, victim)
-          Socialization.redis.sismember generate_forward_key(victim), generate_redis_value(actor)
+          !Socialization.redis.zrevrank(generate_forward_key(victim), generate_redis_value(actor)).nil?
+        end
+
+        def score!(actor, victim)
+          Socialization.redis.zscore generate_forward_key(victim),  generate_redis_value(actor) 
         end
 
         def remove_actor_relations(victim)
           forward_key = generate_forward_key(victim)
-          actors = Socialization.redis.smembers forward_key
+          actors = Socialization.redis.zrevrange forward_key, 0, -1
           Socialization.redis.del forward_key
           actors.each do |actor|
-            Socialization.redis.srem generate_backward_key(actor), generate_redis_value(victim)
+            Socialization.redis.zrem generate_backward_key(actor), generate_redis_value(victim)
           end
           true
         end
 
         def remove_victim_relations(actor)
           backward_key = generate_backward_key(actor)
-          victims = Socialization.redis.smembers backward_key
+          victims = Socialization.redis.zrevrange backward_key, 0, -1
           Socialization.redis.del backward_key
           victims.each do |victim|
-            Socialization.redis.srem generate_forward_key(victim), generate_redis_value(actor)
+            Socialization.redis.zrem generate_forward_key(victim), generate_redis_value(actor)
           end
           true
         end
 
 
-      private
+        private
         def key_type_to_type_names(klass)
           if klass.name.match(/Follow$/)
             ['follower', 'followable']

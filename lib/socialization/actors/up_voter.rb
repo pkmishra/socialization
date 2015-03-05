@@ -40,6 +40,10 @@ module Socialization
         Socialization.upvote_model.unupvote!(self, upvoteable)
       end
 
+      def upvote_time!(upvoteable)
+        raise Socialization::ArgumentError, "#{upvoteable} is not upvoteable!" unless upvoteable.respond_to?(:is_upvoteable?) && upvoteable.is_upvoteable?
+        Socialization.upvote_model.upvote_time!(self, upvoteable)
+      end
       # Toggles a {upvote upvote} relationship.
       #
       # @param [upvoteable] upvoteable the object to upvote/unupvote.

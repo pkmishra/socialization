@@ -63,6 +63,11 @@ module Socialization
         raise Socialization::ArgumentError, "#{mentionable} is not mentionable!" unless mentionable.respond_to?(:is_mentionable?) && mentionable.is_mentionable?
         Socialization.mention_model.mentions?(self, mentionable)
       end
+      
+      def mention_time!(mentionable)
+        raise Socialization::ArgumentError, "#{mentionable} is not mentionable!" unless mentionable.respond_to?(:is_mentionable?) && mentionable.is_mentionable?
+        Socialization.mention_model.mention_time!(self, mentionable)
+      end
 
       # Returns all the mentionables of a certain type that are mentioned by self
       #
