@@ -3,21 +3,39 @@ module Socialization
     class Base
 
       class << self
-        protected
+      protected
         def actors(victim, klass, options = {})
-          Socialization.redis.zrevrange(generate_forward_key(victim), 0, -1).inject([]) do |result, element|
-            result << element.match(/\:(\d+)$/)[1] if element.match(/^#{klass}\:/)
-            result
+          if options[:pluck]
+            Socialization.redis.zrevrange(generate_forward_key(victim), 0, -1).inject([]) do |result, element|
+              result << element.match(/\:(\d+)$/)[1] if element.match(/^#{klass}\:/)
+              result
+            end
+          else
+            actors_relation(victim, klass, options).to_a
           end
         end
 
+       def actors_relation(victim, klass, options = {})
+          ids = actors(victim, klass, :pluck => :id)
+          klass.where("#{klass.table_name}.id IN (?)", ids)
+        end
+
+        def victims_relation(actor, klass, options = {})
+          ids = victims(actor, klass, :pluck => :id)
+          klass.where("#{klass.table_name}.id IN (?)", ids)
+        end
 
         def victims(actor, klass, options = {})
-          Socialization.redis.zrevrange(generate_backward_key(actor), 0, -1).inject([]) do |result, element|
-            result << element.match(/\:(\d+)$/)[1] if element.match(/^#{klass}\:/)
-            result
+          if options[:pluck]
+            Socialization.redis.zrevrange(generate_backward_key(actor), 0, -1).inject([]) do |result, element|
+              result << element.match(/\:(\d+)$/)[1] if element.match(/^#{klass}\:/)
+              result
+            end
+          else
+            victims_relation(actor, klass, options).to_a
           end
         end
+
         def relation!(actor, victim, options = {})
           unless options[:skip_check] || relation?(actor, victim)
             Socialization.redis.zadd generate_forward_key(victim), Time.now.to_i, generate_redis_value(actor)
@@ -43,7 +61,7 @@ module Socialization
         def relation?(actor, victim)
           Socialization.redis.zrevrank(generate_forward_key(victim), generate_redis_value(actor)) >= 0
         end
-
+        
         def score(victim, actor)
           Socialization.redis.zscore generate_forward_key(victim),  generate_redis_value(actor) 
         end
@@ -69,7 +87,7 @@ module Socialization
         end
 
 
-        private
+      private
         def key_type_to_type_names(klass)
           if klass.name.match(/Follow$/)
             ['follower', 'followable']
