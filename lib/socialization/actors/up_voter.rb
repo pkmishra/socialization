@@ -42,7 +42,7 @@ module Socialization
 
       def score!(upvoteable)
         raise Socialization::ArgumentError, "#{upvoteable} is not upvoteable!" unless upvoteable.respond_to?(:is_upvoteable?) && upvoteable.is_upvoteable?
-        Socialization.upvote_model.score!(self, upvoteable)
+        Socialization.upvote_model.upvote_time!(self, upvoteable)
       end
       # Toggles a {upvote upvote} relationship.
       #

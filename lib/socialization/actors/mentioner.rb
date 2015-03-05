@@ -66,7 +66,7 @@ module Socialization
       
       def score!(mentionable)
         raise Socialization::ArgumentError, "#{mentionable} is not mentionable!" unless mentionable.respond_to?(:is_mentionable?) && mentionable.is_mentionable?
-        Socialization.mention_model.score!(self, mentionable)
+        Socialization.mention_model.mention_time!(self, mentionable)
       end
 
       # Returns all the mentionables of a certain type that are mentioned by self
