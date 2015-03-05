@@ -40,7 +40,7 @@ module Socialization
         Socialization.follow_model.unfollow!(self, followable)
       end
 
-      def score!(followable)
+      def follow_time!(followable)
         raise Socialization::ArgumentError, "#{followable} is not followable!" unless followable.respond_to?(:is_followable?) && followable.is_followable?
         Socialization.follow_model.follow_time!(self, followable)
       end

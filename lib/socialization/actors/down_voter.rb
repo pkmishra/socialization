@@ -64,7 +64,7 @@ module Socialization
         Socialization.downvote_model.downvotes?(self, downvoteable)
       end
     
-      def score!(downvoteable)
+      def downvote_time!(downvoteable)
         raise Socialization::ArgumentError, "#{downvoteable} is not downvoteable!" unless downvoteable.respond_to?(:is_downvoteable?) && downvoteable.is_downvoteable?
         Socialization.downvote_model.downvote_time!(self, downvoteable)
       end
