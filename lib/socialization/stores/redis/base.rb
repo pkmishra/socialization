@@ -16,13 +16,15 @@ module Socialization
         end
 
         def actors_relation(victim, klass, options = {})
-          ids = actors(victim, klass, :pluck => :id)
-          klass.where("#{klass.table_name}.id IN (?)", ids).order("idx(Array#{ids}::integer[], #{klass.table_name}.id)")
+          ids = actors(victim, klass, :pluck => :id) || []
+          ids = ids.map(&:to_i)
+          klass.where("#{klass.table_name}.id IN (?)", ids).order("idx(Array#{ids}, #{klass.table_name}.id)")
         end
 
         def victims_relation(actor, klass, options = {})
-          ids = victims(actor, klass, :pluck => :id)
-          klass.where("#{klass.table_name}.id IN (?)", ids).order("idx(Array#{ids}::integer[], #{klass.table_name}.id)")
+          ids = victims(actor, klass, :pluck => :id) || []
+          ids = ids.map(&:to_i)
+          klass.where("#{klass.table_name}.id IN (?)", ids).order("idx(Array#{ids}, #{klass.table_name}.id)")
         end
 
         def victims(actor, klass, options = {})
