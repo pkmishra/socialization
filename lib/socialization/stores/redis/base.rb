@@ -59,7 +59,7 @@ module Socialization
         end
 
         def relation?(actor, victim)
-          Socialization.redis.zrevrank(generate_forward_key(victim), generate_redis_value(actor)) >= 0
+          !Socialization.redis.zrevrank(generate_forward_key(victim), generate_redis_value(actor)).nil?
         end
         
         def score(victim, actor)
