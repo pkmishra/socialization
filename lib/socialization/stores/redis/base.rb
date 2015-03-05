@@ -21,7 +21,7 @@ module Socialization
         end
 
         def victims_relation(actor, klass, options = {})
-          ids = victims(actor, klass, :pluck => :id).map(&:to_i)
+          ids = victims(actor, klass, :pluck => :id)
           klass.where("#{klass.table_name}.id IN (?)", ids).order("idx(Array#{ids}::integer[], #{klass.table_name}.id)")
         end
 
