@@ -40,6 +40,11 @@ module Socialization
         Socialization.follow_model.unfollow!(self, followable)
       end
 
+      def score!(followable)
+        raise Socialization::ArgumentError, "#{followable} is not followable!" unless followable.respond_to?(:is_followable?) && followable.is_followable?
+        Socialization.follow_model.score!(self, followable)
+      end
+
       # Toggles a {Follow follow} relationship.
       #
       # @param [Followable] followable the object to follow/unfollow.

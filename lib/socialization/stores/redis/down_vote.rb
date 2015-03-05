@@ -15,7 +15,7 @@ module Socialization
         alias_method :downvoteables, :victims;                        public :downvoteables
         alias_method :remove_downvoters, :remove_actor_relations;     public :remove_downvoters
         alias_method :remove_downvoteables, :remove_victim_relations; public :remove_downvoteables
-        alias_method :downvote_time, :score;                          public :downvote_time
+        alias_method :downvote_time!, :score!;                          public :downvote_time!
       end
 
     end

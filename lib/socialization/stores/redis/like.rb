@@ -15,7 +15,7 @@ module Socialization
         alias_method :likeables, :victims;                        public :likeables
         alias_method :remove_likers, :remove_actor_relations;     public :remove_likers
         alias_method :remove_likeables, :remove_victim_relations; public :remove_likeables
-        alias_method :like_time, :score;                          public :like_time
+        alias_method :like_time!, :score!;                          public :like_time!
       end
 
     end

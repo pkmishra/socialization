@@ -14,7 +14,7 @@ module Socialization
             actors_relation(victim, klass, options).to_a
           end
         end
-
+        #intarray extention must be enabled in postgres to use sorting by idx
         def actors_relation(victim, klass, options = {})
           ids = actors(victim, klass, :pluck => :id) || []
           ids = ids.map(&:to_i)
@@ -64,7 +64,7 @@ module Socialization
           !Socialization.redis.zrevrank(generate_forward_key(victim), generate_redis_value(actor)).nil?
         end
 
-        def score(victim, actor)
+        def score(actor, victim)
           Socialization.redis.zscore generate_forward_key(victim),  generate_redis_value(actor) 
         end
 

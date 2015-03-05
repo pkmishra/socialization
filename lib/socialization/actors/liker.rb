@@ -54,6 +54,11 @@ module Socialization
           true
         end
       end
+      
+      def score!(likeable)
+        raise Socialization::ArgumentError, "#{likeable} is not likeable!" unless likeable.respond_to?(:is_likeable?) && likeable.is_likeable?
+        Socialization.like_model.score!(self, likeable)
+      end
 
       # Specifies if self likes a {Likeable} object.
       #
